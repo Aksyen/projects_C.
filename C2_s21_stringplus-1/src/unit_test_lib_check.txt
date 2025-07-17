@@ -1,0 +1,169 @@
+/*Библиотека Check предоставляет удобный и мощный способ для написания
+юнит-тестов на языке C. Вот описание функций из библиотеки Check, которые были
+использованы для написания тестов:
+
+Инструкция по запуску
+Убедитесь, что у вас установлены необходимые библиотеки
+
+sudo apt-get install check libsubunit-dev
+
+sudo apt-get install lcov
+
+
+Запустите make команду для сборки и запуска тестов
+
+make test
+
+Запустите make команду для создания отчета покрытия:
+
+make gcov_report
+
+
+### Основные функции библиотеки Check
+
+1. **START_TEST / END_TEST**
+   ```c
+   START_TEST(test_name) {
+       // Тело теста
+   }
+   END_TEST
+   ```
+   Эти макросы определяют начало и конец тестовой функции. Внутри этих макросов
+вы пишете код, который будет выполняться при запуске теста.
+
+2. **ck_assert_ptr_eq**
+   ```c
+   ck_assert_ptr_eq(ptr1, ptr2);
+   ```
+   Проверяет, что два указателя равны. Если указатели не равны, тест будет
+провален.
+
+3. **ck_assert_int_eq**
+   ```c
+   ck_assert_int_eq(int1, int2);
+   ```
+   Проверяет, что два целых числа равны. Если числа не равны, тест будет
+провален.
+
+4. **ck_assert_str_eq**
+   ```c
+   ck_assert_str_eq(str1, str2);
+   ```
+   Проверяет, что две строки равны. Если строки не равны, тест будет провален.
+
+5. **Suite / TCase**
+   ```c
+   Suite* suite_create(const char *name);
+   TCase* tcase_create(const char *name);
+   ```
+   `suite_create` создает новый тестовый набор с заданным именем, а
+`tcase_create` создает новый тестовый случай с заданным именем.
+
+6. **suite_add_tcase**
+   ```c
+   void suite_add_tcase(Suite *suite, TCase *tc);
+   ```
+   Добавляет тестовый случай к тестовому набору.
+
+7. **tcase_add_test**
+   ```c
+   void tcase_add_test(TCase *tc, TFun tf);
+   ```
+   Добавляет тестовую функцию к тестовому случаю.
+
+8. **srunner_create / srunner_run_all / srunner_free / srunner_ntests_failed**
+   ```c
+   SRunner* srunner_create(Suite *suite);
+   void srunner_run_all(SRunner *sr, const char *fname);
+   void srunner_free(SRunner *sr);
+   int srunner_ntests_failed(SRunner *sr);
+   ```
+   `srunner_create` создает новый тестовый раннер для заданного тестового
+набора. `srunner_run_all` запускает все тесты, связанные с данным раннером.
+`srunner_free` освобождает память, выделенную для раннера.
+`srunner_ntests_failed` возвращает количество проваленных тестов.
+
+### Пример использования функций библиотеки Check
+
+Вот пример использования этих функций для создания и запуска тестов:
+
+```c
+#include <check.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "s21_string.h"
+
+// Тест для функции s21_strlen
+START_TEST(test_s21_strlen) {
+    const char *str = "Hello, world!";
+    ck_assert_int_eq(s21_strlen(str), strlen(str));
+}
+END_TEST
+
+// Создание тестового набора и добавление тестового случая
+Suite* s21_string_suite(void) {
+    Suite *s;
+    TCase *tc_core;
+
+    s = suite_create("s21_string");
+    tc_core = tcase_create("Core");
+
+    // Добавление тестовой функции в тестовый случай
+    tcase_add_test(tc_core, test_s21_strlen);
+
+    // Добавление тестового случая в тестовый набор
+    suite_add_tcase(s, tc_core);
+
+    return s;
+}
+
+// Основная функция для запуска тестов
+int main(void) {
+    int number_failed;
+    SRunner *sr;
+
+    // Создание и запуск тестов
+    sr = srunner_create(s21_string_suite());
+    srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+```
+
+### Пошаговое объяснение
+
+1. **Создание теста**:
+   - `START_TEST(test_s21_strlen)` и `END_TEST` определяют начало и конец
+тестовой функции `test_s21_strlen`.
+   - Внутри тестовой функции используется `ck_assert_int_eq` для проверки, что
+результаты функции `s21_strlen` и стандартной функции `strlen` равны.
+
+2. **Создание тестового набора и добавление тестового случая**:
+   - Функция `s21_string_suite` создает новый тестовый набор `s21_string` с
+тестовым случаем `Core`.
+   - `tcase_add_test(tc_core, test_s21_strlen)` добавляет тестовую функцию
+`test_s21_strlen` в тестовый случай `Core`.
+   - `suite_add_tcase(s, tc_core)` добавляет тестовый случай `Core` в тестовый
+набор `s21_string`.
+
+3. **Запуск тестов**:
+   - В основной функции `main` создается тестовый раннер `sr` с тестовым набором
+`s21_string_suite`.
+   - `srunner_run_all(sr, CK_NORMAL)` запускает все тесты.
+   - `srunner_ntests_failed(sr)` возвращает количество проваленных тестов.
+   - Возвращается `EXIT_SUCCESS`, если все тесты прошли, или `EXIT_FAILURE`,
+если есть проваленные тесты.
+
+### Дополнительные функции библиотеки Check
+
+- **ck_assert**: Основная макрофункция для утверждений. Например, `ck_assert(ptr
+!= NULL)`.
+- **ck_assert_msg**: Аналогична `ck_assert`, но позволяет задавать сообщение об
+ошибке. Например, `ck_assert_msg(ptr != NULL, "Pointer is NULL")`.
+
+Используя эти функции, можно создавать подробные и точные тесты для проверки
+функциональности ваших реализаций библиотечных функций.
+*/
