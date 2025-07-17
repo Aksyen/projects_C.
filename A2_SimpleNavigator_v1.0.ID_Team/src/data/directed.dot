@@ -1,0 +1,6 @@
+digraph graphname {
+    0 -> 1 [label=5];
+    1 -> 2 [label=6];
+    2 -> 0 [label=7];
+    2 -> 3 [label=8];
+}
