@@ -1,0 +1,48 @@
+# Основное
+PROJECT_NAME           = "Snake & Tetris Game"
+OUTPUT_DIRECTORY       = docs/browser
+INPUT                  = ../
+FILE_PATTERNS          = *.h *.hpp *.c *.cpp
+RECURSIVE              = YES
+
+# Язык
+OUTPUT_LANGUAGE        = Russian
+
+# Комментарии в стиле Doxygen
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+JAVADOC_AUTOBRIEF      = YES
+
+# Документация к группам и структурам
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+INLINE_INHERITED_MEMB  = YES
+
+# Форматы
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+
+# Qt/macros
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+PREDEFINED             = Q_OBJECT \
+                         QWidget=class \
+                         QPainter=class \
+                         QTimer=class \
+                         QKeyEvent=class \
+                         WINDOW=class
+
+# Подсветка
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+
+# Диаграммы (Graphviz)
+HAVE_DOT               = YES
+DOT_GRAPH_MAX_NODES    = 50
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+CLASS_DIAGRAMS         = YES
+DOT_MULTI_TARGETS      = YES
